@@ -1,36 +1,178 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔖 Smart Bookmark Manager — Realtime Multi-User Web App
 
-## Getting Started
+A production-ready bookmark management app that supports authentication, realtime updates, and secure per-user data isolation.
 
-First, run the development server:
+Built to demonstrate full-stack engineering skills including SSR auth, database security, realtime systems, and deployment debugging.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🚀 Live Demo
+
+**Production URL:**
+https://smart-bookmark-app-omega-one.vercel.app
+
+---
+
+## 🧰 Tech Stack
+
+* **Framework:** Next.js (App Router)
+* **Language:** TypeScript
+* **Database:** Supabase Postgres
+* **Auth:** Supabase OAuth (Google)
+* **Realtime:** Supabase Realtime subscriptions
+* **Styling:** Tailwind CSS
+* **Hosting:** Vercel
+
+---
+
+## ✨ Features
+
+* Google OAuth login
+* Per-user bookmark storage
+* Secure Row Level Security (RLS)
+* Realtime sync across tabs/devices
+* SSR session handling
+* Protected routes
+* Production deployment
+
+---
+
+## 🔐 Security Architecture
+
+This app uses **defense-in-depth access control**:
+
+| Layer      | Protection               |
+| ---------- | ------------------------ |
+| Database   | Row Level Security       |
+| Server     | Authenticated SSR client |
+| Query      | user_id filters          |
+| Middleware | Token refresh            |
+
+Even if one layer fails, data isolation remains enforced.
+
+---
+
+## 🧠 Real Engineering Problems Solved
+
+This project intentionally documents real debugging challenges encountered during development.
+
+---
+
+### 1. Realtime events firing inconsistently
+
+**Problem:** INSERT events sometimes didn’t trigger.
+
+**Cause:** Postgres publication configuration + RLS interaction.
+
+**Fix:** Verified publication settings and adjusted policies so realtime service role could read rows without exposing them to users.
+
+---
+
+### 2. Cross-user data leak
+
+**Problem:** Users could see other users’ bookmarks.
+
+**Cause:** Queries relied only on RLS filtering.
+
+**Fix:** Added explicit query filters:
+
+```
+.eq("user_id", user.id)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This ensures user isolation even if auth context fails.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. OAuth login loop in production
 
-## Learn More
+**Problem:** Login redirected back to login page.
 
-To learn more about Next.js, take a look at the following resources:
+**Cause:** Callback route used read-only server client that couldn’t set cookies.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Fix:** Created dedicated auth callback client with cookie write permissions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+### 4. Random session logout errors
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Problem:** Refresh token errors during SSR.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Cause:** Missing middleware session refresh layer.
+
+**Fix:** Implemented middleware to refresh Supabase session before every request.
+
+---
+
+### 5. Production crash after deployment
+
+**Problem:** Vercel showed server error but worked locally.
+
+**Cause:** Missing environment variables in Vercel.
+
+**Fix:** Added Supabase URL + anon key to production environment.
+
+---
+
+## 📁 Project Structure
+
+```
+app/
+  dashboard/
+  auth/callback/
+components/
+lib/
+supabase/
+middleware.ts
+```
+
+---
+
+## 🧪 Running Locally
+
+```
+git clone <repo>
+cd project
+npm install
+npm run dev
+```
+
+Create `.env.local`:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+```
+
+---
+
+## 🎯 What This Project Demonstrates
+
+This project was built to showcase ability to:
+
+* Debug production deployment issues
+* Implement secure SSR authentication
+* Architect multi-user systems
+* Handle realtime data consistency
+* Diagnose database policy bugs
+* Integrate third-party OAuth
+* Ship a complete app end-to-end
+
+---
+
+## 📌 Key Takeaway
+
+This is not a tutorial project.
+It is a **production-grade system** built while solving real infrastructure and security problems.
+
+---
+
+## 👤 Author
+
+Minhal Naqvi
+
+---
+
+## ⭐ If you're a recruiter
+
+This project represents hands-on experience with real full-stack engineering challenges rather than guided tutorials.
