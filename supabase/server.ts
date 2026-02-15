@@ -13,6 +13,11 @@ export async function createClient() {
           return cookieStore.getAll();
         },
       },
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
     }
   );
 }
