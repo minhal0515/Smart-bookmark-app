@@ -3,6 +3,14 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export async function proxy(req: NextRequest) {
+  const url = new URL(req.url);
+
+  // ✅ CRITICAL FIX — strip OAuth params before render
+  if (url.searchParams.has("code")) {
+    url.search = "";
+    return NextResponse.redirect(url);
+  }
+
   let res = NextResponse.next({
     request: {
       headers: req.headers,
@@ -26,6 +34,7 @@ export async function proxy(req: NextRequest) {
     }
   );
 
+  // keep this — needed for session refresh
   await supabase.auth.getUser();
 
   return res;
