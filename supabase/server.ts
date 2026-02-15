@@ -17,12 +17,10 @@ export async function createClient() {
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false,
-      },
-
-      // ⭐ ADD THIS BLOCK
-      global: {
-        headers: {
-          "x-no-cookie-write": "true",
+        storage: {
+          getItem: () => null,
+          setItem: () => {},
+          removeItem: () => {},
         },
       },
     }
