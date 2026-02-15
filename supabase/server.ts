@@ -18,6 +18,13 @@ export async function createClient() {
         autoRefreshToken: false,
         detectSessionInUrl: false,
       },
+
+      // ⭐ ADD THIS BLOCK
+      global: {
+        headers: {
+          "x-no-cookie-write": "true",
+        },
+      },
     }
   );
 }
