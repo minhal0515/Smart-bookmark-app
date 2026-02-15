@@ -1,3 +1,4 @@
+"use client";
 import { createClient } from "@/supabase/client";
 
 export async function addBookmark(title: string, url: string) {

@@ -12,16 +12,15 @@ export async function createClient() {
         getAll() {
           return cookieStore.getAll();
         },
+        setAll() {
+          // Required for Next.js Server Components
+          // Prevents Supabase from attempting cookie writes during render
+        },
       },
       auth: {
         persistSession: false,
         autoRefreshToken: false,
         detectSessionInUrl: false,
-        storage: {
-          getItem: () => null,
-          setItem: () => {},
-          removeItem: () => {},
-        },
       },
     }
   );
