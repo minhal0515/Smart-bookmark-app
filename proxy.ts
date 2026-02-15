@@ -4,6 +4,7 @@ import type { NextRequest } from "next/server";
 
 export async function proxy(req: NextRequest) {
   const res = NextResponse.next();
+console.error("PROXY request url:", req.url);
 
   createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
