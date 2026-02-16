@@ -10,7 +10,11 @@ export default async function Home() {
   }
 
   return (
-    <main className="flex h-screen items-center justify-center">
+    <main className="flex h-screen flex-col items-center justify-center gap-6">
+      <h1 className="text-3xl font-bold tracking-tight">
+        Smart Bookmark Micro Challenge
+      </h1>
+
       <AuthButton />
     </main>
   );
